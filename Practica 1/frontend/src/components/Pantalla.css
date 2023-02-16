@@ -1,0 +1,21 @@
+.pantalla-contorno {
+    height: 8em;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #01DF01;
+    margin: 10px;
+    border-radius: 25px;
+}
+
+.expresion {
+    flex: 1;
+    font-size: 15;
+}
+
+.resultado {
+    flex: 1;
+    font-size: 20;
+}

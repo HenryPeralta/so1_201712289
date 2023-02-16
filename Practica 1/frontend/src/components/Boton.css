@@ -1,0 +1,13 @@
+.boton-contorno {
+    height: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    background-color: #424949;
+    color: white;
+    flex: 1;
+
+    margin: 5px;
+    border-radius: 25px;
+}

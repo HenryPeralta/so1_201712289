@@ -1,0 +1,52 @@
+body {
+  background-color: white;
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.calc-contorno {
+  background-color: #283747;
+  width: 400px;
+  border-radius: 16px;
+}
+
+.fila {
+  display: flex;
+}
+
+nav {
+  background-color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+nav ul li{
+  display: inline-block;
+}
+
+nav ul li .linkref{
+  display: block;
+  padding: 0.5rem 1rem;
+  transition: all 0.4s linear;
+  text-decoration: none;
+  color: white;
+}
+
+nav ul li .linkref:hover{
+  background: #4a4a4a;
+}
