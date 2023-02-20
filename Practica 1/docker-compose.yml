@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  db:
+    container_name: so1-db1
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'dbso1'
+      MYSQL_PASSWORD: 'secret'
+      MYSQL_ROOT_PASSWORD: 'secret'
+    ports:
+      - '3307:3306'
+    expose:
+      - '3307'
+    volumes:
+      - ./db_data:/var/lib/mysql
+
+  backend:
+    container_name: backend
+    restart: always
+    build: ./servidor
+    image: henryperalta/backend_practica1_201712289
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    links: 
+      - db
+    volumes:
+      - /home/henry/ejemplo:/reportes
+
+  front:
+    container_name: frontend
+    restart: always
+    build: ./frontend
+    image: henryperalta/frontend_practica1_201712289
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    links: 
+      - backend
+
+  scripts:
+    container_name: scripts
+    restart: always
+    build: ./scripts
+    image: henryperalta/script_practica1_201712289
+    depends_on:
+      - backend
+    links: 
+      - backend
+    volumes:
+      - /home/henry/ejemplo:/reportes
+  
+volumes:
+  db_data:
+  reportes:

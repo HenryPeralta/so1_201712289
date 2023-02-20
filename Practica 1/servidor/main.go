@@ -1,70 +1,81 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
 	"strconv"
-	"context"
-	"database/sql"
+	"time"
 
-	"github.com/gorilla/mux"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
-type valCalculadora struct{
-	Val1 float32 `json:"Val1"`
-	Operador string `json:"Operador"`
-	Val2 float32 `json:"Val2"`
+type valCalculadora struct {
+	Val1      float32 `json:"Val1"`
+	Operador  string  `json:"Operador"`
+	Val2      float32 `json:"Val2"`
 	Resultado float32 `json:"Resultado"`
-	Fecha string `json:"Fecha"`
-	Bandera bool `json:"Bandera"`
-	Mensaje string `json:"Mensaje"`
+	Fecha     string  `json:"Fecha"`
+	Bandera   bool    `json:"Bandera"`
+	Mensaje   string  `json:"Mensaje"`
 }
 
-type CalculadoraBD struct{
-	Val1 float32
-	Operador string
-	Val2 float32
+type CalculadoraBD struct {
+	Val1      float32
+	Operador  string
+	Val2      float32
 	Resultado float32
-	Fecha string
-	Bandera bool
-	Mensaje string
+	Fecha     string
+	Bandera   bool
+	Mensaje   string
 }
 
 var calcu = []CalculadoraBD{}
 
 var valores valCalculadora
 
-func main(){
+var scripts = ""
+
+func main() {
 	ctx := context.Background()
 	db, err := crearConexionBd()
-	if(err != nil){
+	if err != nil {
 		panic(err)
 	}
 
 	err = queryCalculadora(ctx, db)
-	if(err != nil){
+	if err != nil {
 		panic(err)
+	}
+
+	for i := 0; i < len(calcu); i++ {
+		scripts += fmt.Sprintf("%v", calcu[i].Val1) + " " + calcu[i].Operador + " " + fmt.Sprintf("%v", calcu[i].Val2) + " " + "=" + " " + fmt.Sprintf("%v", calcu[i].Resultado) + " " + calcu[i].Fecha + " " + calcu[i].Mensaje + "\n"
+	}
+
+	errors := ioutil.WriteFile(("/reportes/logs.txt"), []byte(scripts), 0644)
+	if errors != nil {
+		log.Fatal((errors))
 	}
 
 	request()
 }
 
-func getOperacion(w http.ResponseWriter, req *http.Request){
+func getOperacion(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(valores)
 }
 
-func getHistorial(w http.ResponseWriter, req *http.Request){
+func getHistorial(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(calcu)
 }
 
-func createOperacion(w http.ResponseWriter, req *http.Request){
+func createOperacion(w http.ResponseWriter, req *http.Request) {
 	reqBody, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		fmt.Fprintf(w, "Insertar operacion valida")
@@ -83,11 +94,11 @@ func createOperacion(w http.ResponseWriter, req *http.Request){
 	case "*":
 		result = valores.Val1 * valores.Val2
 	case "/":
-		if(valores.Val2 == 0){
+		if valores.Val2 == 0 {
 			result = 0
 			bandera = false
 			mensaje = "Error al dividir con cero"
-		}else{
+		} else {
 			result = valores.Val1 / valores.Val2
 		}
 	}
@@ -131,13 +142,13 @@ func createOperacion(w http.ResponseWriter, req *http.Request){
 	tiempoActual := strconv.Itoa(anio) + "-" + numMes + "-" + strconv.Itoa(dia) + " " + strconv.Itoa(hora) + ":" + strconv.Itoa(minuto) + ":" + strconv.Itoa(segundo)
 
 	respuesta := valCalculadora{
-		Val1: valores.Val1,
-		Operador: valores.Operador,
-		Val2: valores.Val2,
+		Val1:      valores.Val1,
+		Operador:  valores.Operador,
+		Val2:      valores.Val2,
 		Resultado: result,
-		Fecha: tiempoActual,
-		Bandera: bandera,
-		Mensaje: mensaje,
+		Fecha:     tiempoActual,
+		Bandera:   bandera,
+		Mensaje:   mensaje,
 	}
 
 	datosJson, err := json.Marshal(respuesta)
@@ -152,7 +163,7 @@ func createOperacion(w http.ResponseWriter, req *http.Request){
 	json.NewEncoder(w).Encode(valores)
 
 	conexionBD, err := crearConexionBd()
-	if(err != nil){
+	if err != nil {
 		panic(err)
 	}
 
@@ -164,22 +175,29 @@ func createOperacion(w http.ResponseWriter, req *http.Request){
 	query := "insert into calculadora values(" + strval1 + ",'" + valores.Operador + "'," + strval2 + "," + strresult + ",'" + valores.Fecha + "'," + strbandera + ",'" + valores.Mensaje + "')"
 
 	insertarRegistro, err := conexionBD.Prepare(query)
-	if(err != nil){
+	if err != nil {
 		panic(err)
 	}
 	insertarRegistro.Exec()
 
 	temp := CalculadoraBD{
-		Val1: valores.Val1,
-		Operador: valores.Operador,
-		Val2: valores.Val2,
+		Val1:      valores.Val1,
+		Operador:  valores.Operador,
+		Val2:      valores.Val2,
 		Resultado: result,
-		Fecha: tiempoActual,
-		Bandera: bandera,
-		Mensaje: mensaje,
+		Fecha:     tiempoActual,
+		Bandera:   bandera,
+		Mensaje:   mensaje,
 	}
 
 	calcu = append(calcu, temp)
+
+	scripts += strval1 + " " + valores.Operador + " " + strval2 + " " + "=" + " " + strresult + " " + tiempoActual + " " + valores.Mensaje + "\n"
+
+	errors := ioutil.WriteFile(("/reportes/logs.txt"), []byte(scripts), 0644)
+	if errors != nil {
+		log.Fatal((errors))
+	}
 }
 
 func enableCORS(router *mux.Router) {
@@ -192,7 +210,7 @@ func enableCORS(router *mux.Router) {
 func middlewareCors(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, req *http.Request) {
-      w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
@@ -200,7 +218,7 @@ func middlewareCors(next http.Handler) http.Handler {
 		})
 }
 
-func request(){
+func request() {
 	router := mux.NewRouter().StrictSlash(false)
 	enableCORS(router)
 	router.HandleFunc("/operacion", getOperacion).Methods("GET")
@@ -211,34 +229,34 @@ func request(){
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
-func crearConexionBd()(*sql.DB, error){
-	conexionbd := "root:familia@tcp(localhost:3306)/EjemploDB"
+func crearConexionBd() (*sql.DB, error) {
+	conexionbd := "root:secret@tcp(so1-db1)/dbso1"
 	db, err := sql.Open("mysql", conexionbd)
-	if(err != nil){
+	if err != nil {
 		return nil, err
 	}
 
 	err = db.Ping()
-	if(err != nil){
+	if err != nil {
 		return nil, err
 	}
 
 	return db, nil
 }
 
-func queryCalculadora(ctx context.Context, db *sql.DB) error{
+func queryCalculadora(ctx context.Context, db *sql.DB) error {
 	qry := "select c.val1, c.operador, c.val2, c.resultado, c.fecha, c.bandera, c.mensaje from calculadora c"
 
 	rows, err := db.QueryContext(ctx, qry)
-	if(err != nil){
+	if err != nil {
 		return nil
 	}
 
-	for rows.Next(){
+	for rows.Next() {
 		b := CalculadoraBD{}
 
 		err = rows.Scan(&b.Val1, &b.Operador, &b.Val2, &b.Resultado, &b.Fecha, &b.Bandera, &b.Mensaje)
-		if(err != nil){
+		if err != nil {
 			return nil
 		}
 
