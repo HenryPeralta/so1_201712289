@@ -92,11 +92,11 @@ diaoperaciones=()
 while IFS= read -r line
 do
     if [[ "${line:(-4):4}" == "cero" ]]; then
-        if [[ "${line:(-45):10}" == "2023-02-19" ]]; then
+        if [[ "${line:(-45):10}" == "2023-02-21" ]]; then
             diaoperaciones+=("$line")     
         fi
     else
-        if [[ "${line:(-28):10}" == "2023-02-19" ]]; then
+        if [[ "${line:(-28):10}" == "2023-02-21" ]]; then
             diaoperaciones+=("$line")     
         fi
     fi
