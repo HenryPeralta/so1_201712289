@@ -1,9 +1,9 @@
-﻿Universidad San Carlos de Guatemala
-Facultad de Ingeniería
-Escuela de Ciencias y Sistemas
-Sistemas Operativos 1 - Sección A
-Ing. Jesús Alberto Guzmán Polanco
-Aux. German Jose Paz Cordon
+﻿Universidad San Carlos de Guatemala <br>
+Facultad de Ingeniería <br>
+Escuela de Ciencias y Sistemas <br>
+Sistemas Operativos 1 - Sección A <br>
+Ing. Jesús Alberto Guzmán Polanco <br>
+Aux. German Jose Paz Cordon <br>
 
 ### Manual Técnico Practica 2 SO1
 
@@ -50,7 +50,5 @@ Se crearon 2 modulos uno para la cpu y otro para la ram. se utulizaron librerias
 
 ### Google Cloud Plataform
 Se utilizo el servicio de la nube de google (GCP) para crear 2 instancias vm y 1 instancia SQL para que el proyecto se ejecute.  
-
-![enter image description here](https://i.ibb.co/2s6TFk4/Captura-de-pantalla-de-2023-03-22-19-21-15.png)
 
 ![enter image description here](https://i.ibb.co/JsGzzRh/Captura-de-pantalla-de-2023-03-22-19-20-32.png)
