@@ -92,7 +92,7 @@ static int getCpuInfo(struct seq_file *archivo, void *v) {
     seq_printf(archivo, "\"Procesos\": [\n");
     for_each_process(procesos){
 
-            estado = get_procesos_state_id(procesos->state);
+            estado = get_procesos_state_id(procesos->__state);
 
             if(estado == 0){
                 procesos_ejecucion = procesos_ejecucion + 1;
@@ -112,7 +112,7 @@ static int getCpuInfo(struct seq_file *archivo, void *v) {
         seq_printf(archivo, "\t\"Pid\":%d,\n", procesos->pid);
         seq_printf(archivo, "\t\"Nombre\":\"%s\",\n", procesos->comm);
         //----seq_printf(archivo, "\t\"Estado\":%li,\n", procesos->state);
-        seq_printf(archivo, "\t\"Estado\":\"%s\",\n", get_procesos_state(procesos->state));
+        seq_printf(archivo, "\t\"Estado\":\"%s\",\n", get_procesos_state(procesos->__state));
         seq_printf(archivo, "\t\"User\":%d,\n", procesos->cred->uid.val);
         seq_printf(archivo, "\t\"Ram\":%d,\n", __kuid_val(procesos->real_cred->uid));
         //----mm para el porcentaje de ram
