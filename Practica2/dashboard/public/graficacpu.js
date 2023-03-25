@@ -6,7 +6,7 @@ const dataX_cpu = [0]
 const dataY_cpu = [0]
 
 function actualizando_Grafica_cpu(){
-    fetch('http://34.118.240.56:8000/usoCpu')
+    fetch('http://34.125.14.101:8000/usoCpu')
     .then(response => response.json())
     .then(datos => {
         let ultimoYcpu = datos[datos.length-1].Porcentaje
@@ -31,7 +31,7 @@ function Ciclo_cpu(){
 Ciclo_cpu();
 
 function Eliminar_registro_cpu(){
-  fetch('http://34.118.240.56:8000/usoCpu',{
+  fetch('http://34.125.14.101:8000/usoCpu',{
     method: 'DELETE'
   })
   .then(response => response.json())

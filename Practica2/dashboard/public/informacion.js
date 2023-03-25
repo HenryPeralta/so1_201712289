@@ -1,5 +1,5 @@
 async function actualizando_tabla_info(){
-    let response = await fetch('http://34.118.240.56:8000/infoCpu')
+    let response = await fetch('http://34.125.14.101:8000/infoCpu')
     let infocpu = await response.json()
 
     console.log(infocpu)

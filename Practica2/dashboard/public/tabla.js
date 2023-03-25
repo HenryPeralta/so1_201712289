@@ -2,10 +2,10 @@ var listacompleta = []
 
 async function actualizando_tabla(){
  
-    let response = await fetch('http://34.118.240.56:8000/Cpu')
+    let response = await fetch('http://34.125.14.101:8000/Cpu')
     let datoscpu = await response.json()
 
-    let response2 = await fetch('http://34.118.240.56:8000/Hijos')
+    let response2 = await fetch('http://34.125.14.101:8000/Hijos')
     let datoshijos = await response2.json()
 
     console.log(datoscpu)

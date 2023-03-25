@@ -6,7 +6,7 @@ const dataX_ram = [0]
 const dataY_ram = [0]
 
 function actualizando_Grafica_ram(){
-    fetch('http://34.118.240.56:8000/infoRam')
+    fetch('http://34.125.14.101:8000/infoRam')
     .then(response => response.json())
     .then(datos => {
         let ultimoY = datos[datos.length-1].Porcentaje
@@ -32,7 +32,7 @@ function Ciclo_ram(){
 Ciclo_ram();
 
 function Eliminar_registro(){
-  fetch('http://34.118.240.56:8000/infoRam',{
+  fetch('http://34.125.14.101:8000/infoRam',{
     method: 'DELETE'
   })
   .then(response => response.json())
